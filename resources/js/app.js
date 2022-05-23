@@ -4,26 +4,24 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+require("./bootstrap");
 
-import Vue from 'vue';
-import routes from './router/index';
-import store from './store/index';
+import Vue from "vue";
+import routes from "./router/index";
+import store from "./store/index";
 
-import CxltToastr from 'cxlt-vue2-toastr';
-import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css';
+import CxltToastr from "cxlt-vue2-toastr";
+import "cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css";
 
 var toastrConfigs = {
-    position: 'top right',
+    position: "top right",
     showDuration: 1000,
     timeOut: 5000,
     closeButton: true,
-    showMethod: 'fadeIn',
-    hideMethod: 'fadeOut',
-}
-Vue.use(CxltToastr, toastrConfigs)
-
-
+    showMethod: "fadeIn",
+    hideMethod: "fadeOut",
+};
+Vue.use(CxltToastr, toastrConfigs);
 
 /**
  * The following block of code may be used to automatically register your
@@ -36,7 +34,7 @@ Vue.use(CxltToastr, toastrConfigs)
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('app-header', require('./components/Header.vue').default);
+Vue.component("app-header", require("./components/Header.vue").default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -45,7 +43,7 @@ Vue.component('app-header', require('./components/Header.vue').default);
  */
 
 const app = new Vue({
-    el: '#app',
+    el: "#app",
     router: routes,
     store,
 });

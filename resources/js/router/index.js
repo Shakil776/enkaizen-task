@@ -1,68 +1,74 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import store from '../store'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import store from "../store";
 
 Vue.use(VueRouter);
 
-
 // Dashboard Component
-import Dashboard from '../pages/dashboard/Index.vue'
+import Dashboard from "../pages/dashboard/Index.vue";
 
 // Authentication File
-import Login from '../pages/auth/Login.vue'
-import Register from '../pages/auth/Register.vue'
+import Login from "../pages/auth/Login.vue";
+import Register from "../pages/auth/Register.vue";
+
+// Add image
+import AddImage from "../components/AddImage.vue";
 
 const routes = new VueRouter({
-    mode: 'history',
-    linkExactActiveClass: 'active',
+    mode: "history",
+    linkExactActiveClass: "active",
     routes: [
         {
-            path: '/',
-            redirect: { name: 'login' }
+            path: "/",
+            redirect: { name: "login" },
         },
         {
-            path: '/login',
+            path: "/login",
             component: Login,
-            name: 'login',
-            // meta: {
-            //     requiresVisitor: true,
-            // }
+            name: "login",
         },
         {
-            path: '/register',
+            path: "/register",
             component: Register,
-            name: 'register',
-            // meta: {
-            //     requiresVisitor: true,
-            // }
+            name: "register",
         },
         {
-            path: '/dashboard',
+            path: "/dashboard",
             component: Dashboard,
-            name: 'dashboard',
+            name: "dashboard",
             meta: {
                 requiresAuth: true,
-            }
+            },
         },
-    ]
+        {
+            path: "/add-image",
+            component: AddImage,
+            name: "addimage",
+            meta: {
+                requiresAuth: true,
+            },
+        },
+    ],
 });
 
 routes.beforeEach((to, from, next) => {
-
     // check if the route requires authentication and user is not logged in
-    if (to.matched.some(route => route.meta.requiresAuth) && !store.state.isLoggedIn) {
+    if (
+        to.matched.some((route) => route.meta.requiresAuth) &&
+        !store.state.isLoggedIn
+    ) {
         // redirect to login page
-        next({ name: 'login' })
-        return
+        next({ name: "login" });
+        return;
     }
 
     // if logged in redirect to dashboard
-    if(to.path === '/login' && store.state.isLoggedIn) {
-        next({ name: 'dashboard' })
-        return
+    if (to.path === "/login" && store.state.isLoggedIn) {
+        next({ name: "dashboard" });
+        return;
     }
 
-    next()
-})
+    next();
+});
 
 export default routes;

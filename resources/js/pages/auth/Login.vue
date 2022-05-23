@@ -16,7 +16,6 @@
                       class="form-control"
                       placeholder="Email"
                     />
-                   
                   </div>
                   <div class="form-group">
                     <label for="">Password</label>
@@ -28,10 +27,7 @@
                     />
                   </div>
                   <div class="form-group">
-                    <button
-                      type="submit"
-                      class="btn btn-success px-4"
-                    >
+                    <button type="submit" class="btn btn-success px-4">
                       Login
                     </button>
                   </div>
@@ -46,29 +42,37 @@
 </template>
 
 <script>
-    import store from '../../store'
-    export default {
-        data() {
-            return {
-                email: '',
-                password: '',
-                loginError: false,
-            }
-        },
-        methods: {
-            login() {
-                this.loginError = false;
-                axios.post('/api/auth/login', {
-                    email: this.email,
-                    password: this.password
-                }).then(response => {
-                    store.commit('loginUser')
-                    localStorage.setItem('token', response.data.access_token)
-                    this.$router.push({ name: 'dashboard' })
-                }).catch(error => {
-                    this.loginError = true
-                });
-            }
-        }
-    }
+import store from "../../store";
+export default {
+  data() {
+    return {
+      email: "",
+      password: "",
+      loginError: false,
+      // user_id: "",
+    };
+  },
+  methods: {
+    login() {
+      this.loginError = false;
+      axios
+        .post("/api/auth/login", {
+          email: this.email,
+          password: this.password,
+        })
+        .then((response) => {
+          store.commit("loginUser");
+          localStorage.setItem("token", response.data.access_token);
+          localStorage.setItem(
+            "user_id",
+            JSON.stringify(response.data.user.id)
+          );
+          this.$router.push({ name: "dashboard" });
+        })
+        .catch((error) => {
+          this.loginError = true;
+        });
+    },
+  },
+};
 </script>
