@@ -81,7 +81,6 @@ class AuthController extends Controller
             'name' => 'string',
             'email' => 'required|email|unique:users',
             'mobile' => 'required|min:11',
-            'profile_image' => 'nullable|image|max:5000',
             'password' => 'required|string|min:6',
         ]);
 
@@ -132,8 +131,8 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // profile
-    public function profile() {
+    // user info
+    public function user_info() {
         $user = Auth::guard('api')->user();
         return response()->json([
             'success' => true,
@@ -144,7 +143,7 @@ class AuthController extends Controller
     // token response
     protected function respondWithToken($token) 
     {
-        $user = User::select('id', 'name', 'email', 'mobile', 'profile_image')->where('id', Auth::guard('api')->id())->first();
+        $user = User::select('id', 'name', 'email', 'mobile')->where('id', Auth::guard('api')->id())->first();
 
         return response()->json([
             'success' => true,

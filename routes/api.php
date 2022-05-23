@@ -26,15 +26,15 @@ Route::group(['middleware' => 'api'], function () {
     });
     
     // authenticate user logout and profile in prefix 'auth'
-    Route::group(['middleware' => ['jwt.verify'], 'prefix' => 'auth'], function() {
+    Route::group(['prefix' => 'auth'], function() {
         // logout
         Route::get('logout', [AuthController::class, 'logout']);
-        // profile
-        Route::get('profile', [AuthController::class, 'profile']);
+        // user
+        Route::get('user', [AuthController::class, 'user_info']);
     });
 
     // authenticate user image in prefix 'image'
-    Route::group(['middleware' => ['jwt.verify'], 'prefix' => 'image'], function() {
+    Route::group(['prefix' => 'image'], function() {
         // get user all image
         Route::post('images', [ImageController::class, 'get_images']);
         // upload image

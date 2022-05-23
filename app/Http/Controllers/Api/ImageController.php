@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use App\Models\Image;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use App\Jobs\ImageUploadJob;
 
 class ImageController extends Controller
 {
@@ -34,7 +32,6 @@ class ImageController extends Controller
     public function upload_image(Request $request)
     {
         $data = $request->all();
-
         //validate
         $validator = Validator::make($data, [
             'user_id' => 'required',
@@ -46,36 +43,8 @@ class ImageController extends Controller
             return response()->json(['success' => false, 'error' => $validator->messages()], 422);
         }
 
-        try {
-            $file_name = null;
-            if ($request->path) {
-                $url = $request->path;
-                $info = pathinfo($url);
-                $file_name = Str::random(5).'_'.$info['basename'];
-                $contents = file_get_contents($url);
-                Storage::disk('public')->put($file_name, $contents);
-            }
+        // download image using job queue
+        dispatch(new ImageUploadJob($data));
 
-            $image= Image::create([
-                'user_id' => $request->user_id,
-                'path' => $file_name,
-            ]);
-
-            if($image){
-                return response()->json([
-                    'success' => true,
-                ], 201);
-            }else{
-                return response()->json([
-                    'success' => false,
-                ], 422);
-            }
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-            ], 422);
-        }
-  
     }
 }

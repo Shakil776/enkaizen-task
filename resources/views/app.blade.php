@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Laravel & Vue SPA</title>
+    <title>Laravel & Vue Image Uploader SPA</title>
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
@@ -20,5 +20,6 @@
 
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}"></script>
+
 </body>
 </html>

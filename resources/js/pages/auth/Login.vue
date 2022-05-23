@@ -12,30 +12,24 @@
                     <label for="">Email</label>
                     <input
                       type="text"
-                      v-model="loginForm.email"
+                      v-model="email"
                       class="form-control"
-                      placeholder="email"
-                      :class="{ 'is-invalid': loginForm.errors.has('email') }"
+                      placeholder="Email"
                     />
-                    <has-error :form="loginForm" field="email"></has-error>
+                   
                   </div>
                   <div class="form-group">
                     <label for="">Password</label>
                     <input
                       type="password"
-                      v-model="loginForm.password"
+                      v-model="password"
                       class="form-control"
-                      placeholder="password"
-                      :class="{
-                        'is-invalid': loginForm.errors.has('password'),
-                      }"
+                      placeholder="Password"
                     />
-                    <has-error :form="loginForm" field="password"></has-error>
                   </div>
                   <div class="form-group">
                     <button
                       type="submit"
-                      :disabled="loginForm.busy"
                       class="btn btn-success px-4"
                     >
                       Login
@@ -52,43 +46,29 @@
 </template>
 
 <script>
-import { Form } from "vform";
-
-export default {
-  data() {
-    return {
-      loginForm: new Form({
-        email: "shakil@gmail.com",
-        password: "",
-      }),
-    };
-  },
-  methods: {
-    async login() {
-      await axios.get("/sanctum/csrf-cookie");
-      await this.loginForm.post("/login");
-      await this.getUserData();
-
-      this.$toast.success({
-        title: "Success!",
-        message: "Welcome, Dear!",
-      });
-
-      this.$router.push({ name: "dashboard" });
-    },
-    async getUserData() {
-      await axios.get("/api/user").then((response) => {
-        let user = response.data;
-        this.$store.commit("SET_USER", user);
-        this.$store.commit("SET_AUTHENTICATED", true);
-
-        localStorage.setItem("auth", true);
-      });
-    },
-  },
-  mounted() {},
-};
+    import store from '../../store'
+    export default {
+        data() {
+            return {
+                email: '',
+                password: '',
+                loginError: false,
+            }
+        },
+        methods: {
+            login() {
+                this.loginError = false;
+                axios.post('/api/auth/login', {
+                    email: this.email,
+                    password: this.password
+                }).then(response => {
+                    store.commit('loginUser')
+                    localStorage.setItem('token', response.data.access_token)
+                    this.$router.push({ name: 'dashboard' })
+                }).catch(error => {
+                    this.loginError = true
+                });
+            }
+        }
+    }
 </script>
-
-<style>
-</style>

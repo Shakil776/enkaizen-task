@@ -1,16 +1,16 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from '../store'
 
 Vue.use(VueRouter);
 
 
 // Dashboard Component
-import Dashboard from '../pages/dashboard/index.vue'
-import UserProfile from '../pages/dashboard/profile.vue'
+import Dashboard from '../pages/dashboard/Index.vue'
 
 // Authentication File
 import Login from '../pages/auth/Login.vue'
-import Signup from '../pages/auth/Signup.vue'
+import Register from '../pages/auth/Register.vue'
 
 const routes = new VueRouter({
     mode: 'history',
@@ -18,38 +18,51 @@ const routes = new VueRouter({
     routes: [
         {
             path: '/',
+            redirect: { name: 'login' }
+        },
+        {
+            path: '/login',
+            component: Login,
+            name: 'login',
+            // meta: {
+            //     requiresVisitor: true,
+            // }
+        },
+        {
+            path: '/register',
+            component: Register,
+            name: 'register',
+            // meta: {
+            //     requiresVisitor: true,
+            // }
+        },
+        {
+            path: '/dashboard',
             component: Dashboard,
             name: 'dashboard',
             meta: {
                 requiresAuth: true,
             }
         },
-        
-        {
-            path: '/auth/login',
-            component: Login,
-            name: 'login',
-            meta: {
-                requiresVisitor: true,
-            }
-        },
-        {
-            path: '/auth/signup',
-            component: Signup,
-            name: 'signup',
-            meta: {
-                requiresVisitor: true,
-            }
-        },
-        {
-            path: '/profile',
-            component: UserProfile,
-            name: 'user-profile',
-            meta: {
-                requiresAuth: true,
-            }
-        }
     ]
 });
+
+routes.beforeEach((to, from, next) => {
+
+    // check if the route requires authentication and user is not logged in
+    if (to.matched.some(route => route.meta.requiresAuth) && !store.state.isLoggedIn) {
+        // redirect to login page
+        next({ name: 'login' })
+        return
+    }
+
+    // if logged in redirect to dashboard
+    if(to.path === '/login' && store.state.isLoggedIn) {
+        next({ name: 'dashboard' })
+        return
+    }
+
+    next()
+})
 
 export default routes;
