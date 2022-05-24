@@ -13,14 +13,28 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-md-4 mb-2" v-for="item in allImages" :key="item.id">
+    <div class="row mb-2" v-if="loading">
+      <div class="col-12 d-flex justify-content-center">
+        <div class="loader"></div>
+      </div>
+    </div>
+
+    <div class="row mb-2" v-if="allImages.length != 0">
+      <div class="col-md-4 mb-4" v-for="item in allImages" :key="item.id">
         <div class="thumbnail">
           <img
             :src="item.path"
-            alt="Lights"
+            alt="Image"
             style="width: 100%; height: 300px"
           />
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-2 mt-4" v-else>
+      <div class="col-md-12 mt-4 d-flex justify-content-center">
+        <div class="thumbnail">
+          <h4>No Image Found</h4>
         </div>
       </div>
     </div>
@@ -28,33 +42,70 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
       allImages: [],
+      loading: false,
+      user_id: JSON.parse(localStorage.getItem("user_id")),
     };
   },
   methods: {
     async getImage() {
+      this.loading = true;
       await axios({
         method: "post",
         url: "/api/image/images",
         data: {
-          user_id: JSON.parse(localStorage.getItem("user_id")),
+          user_id: this.user_id
         },
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       })
         .then((response) => {
           this.allImages = response.data.data;
+          this.loading = false;
         })
         .catch((error) => {
+          this.loading = false;
           console.log("Error");
         });
     },
   },
   mounted() {
     this.getImage();
+    Echo.private(`App.Models.User.${this.user_id}`).notification(
+        (notification) => {
+          // console.log("Notification message");
+          // console.log(notification.message);
+          this.$toast.success({
+            title: "Success!",
+            message: notification.message,
+          });
+        }
+      );
   },
   computed: {},
+
 };
 </script>
+
+<style lang="scss" scoped>
+  .loader {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>

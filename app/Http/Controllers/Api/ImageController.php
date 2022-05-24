@@ -7,16 +7,24 @@ use App\Jobs\ImageUploadJob;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ImageController extends Controller {
     // get images
     public function get_images(Request $request) {
-        $images = Image::select('id', 'user_id', 'path')->where('user_id', $request->user_id)->get();
+
+        // $images = Image::select('id', 'user_id', 'path')->where('user_id', $request->user_id)->get();
+
+        // foreach ($images as $img) {
+        //     $img->path = url('/storage/'.$img->path);
+        // }
+        
+        $images = Image::select('id', 'user_id', DB::raw('CONCAT("'.url('/storage/').'/", path) as path'))->where('user_id', $request->user_id)->get();
 
         if (!empty($images)) {
             return response()->json([
                 'success' => true,
-                'data'    => $images,
+                'data'    => $images
             ], 200);
         }
 

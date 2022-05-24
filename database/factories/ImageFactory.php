@@ -16,7 +16,7 @@ class ImageFactory extends Factory
     {
         return [
             'user_id' => User::all()->random()->id,
-            'path' => 'https://source.unsplash.com/random'
+            'path' => '1OdB9_logo1w.png'
         ];
     }
 }

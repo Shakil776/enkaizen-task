@@ -49,7 +49,7 @@ class ImageUploadJob implements ShouldQueue {
 
             $user = User::find($this->data['user_id']);
             // send notification to the user
-            $user->notify(new RealTimeNotification('Image added successfull.'));
+            $user->notify(new RealTimeNotification('Image Uploaded Successfully.'));
 
         } catch (\Exception $e) {
 

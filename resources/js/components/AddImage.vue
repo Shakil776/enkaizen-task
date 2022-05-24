@@ -19,12 +19,15 @@
                     />
                   </div>
 
-                  <div class="form-group">
+                  <div id="img_preview" class="image_style"></div>
+
+                  <div class="form-group mt-2">
                     <button type="submit" class="btn btn-success px-4">
                       Submit
                     </button>
                   </div>
                 </form>
+
               </div>
             </div>
           </div>
@@ -39,6 +42,7 @@ export default {
   data() {
     return {
       url: "",
+      user_id: JSON.parse(localStorage.getItem("user_id")),
     };
   },
   methods: {
@@ -47,31 +51,27 @@ export default {
         method: "post",
         url: "/api/image/upload-image",
         data: {
-          user_id: JSON.parse(localStorage.getItem("user_id")),
+          user_id: this.user_id,
           path: this.url,
         },
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       })
         .then((response) => {
-          console.log(response);
+            this.$router.push({ name: "dashboard" });
+          
         })
         .catch((error) => {
           console.log("Error");
         });
     },
 
-    async imagePreview() {
-      await axios
-        .get(this.url)
-        .then((response) => {
-          console.log("Before");
-          console.log(response);
-          console.log("After");
-        })
-        .catch((error) => {
-          console.log("Error");
-        });
+    imagePreview() {
+        var img = new Image();
+        img.src = this.url;
+        img.width = 100;
+        img_preview.appendChild(img);
     },
+
   },
 };
 </script>
