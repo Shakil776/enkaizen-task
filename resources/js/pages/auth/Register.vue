@@ -14,7 +14,7 @@
                       type="text"
                       v-model="name"
                       class="form-control"
-                      placeholder="name"
+                      placeholder="Name"
                     />
                   </div>
                   <div class="form-group">
@@ -23,7 +23,7 @@
                       type="text"
                       v-model="email"
                       class="form-control"
-                      placeholder="email"
+                      placeholder="Email"
                     />
                   </div>
                   <div class="form-group">
@@ -32,7 +32,7 @@
                       type="number"
                       v-model="mobile"
                       class="form-control"
-                      placeholder="mobile"
+                      placeholder="Mobile"
                     />
                   </div>
                   <div class="form-group">
@@ -41,7 +41,7 @@
                       type="password"
                       v-model="password"
                       class="form-control"
-                      placeholder="password"
+                      placeholder="Password"
                     />
                   </div>
 
@@ -68,12 +68,39 @@ export default {
       email: "",
       mobile: "",
       password: "",
-      registrationError: false,
     };
   },
   methods: {
     register() {
-      this.registrationError = false;
+      if (this.name == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Name field is required.",
+        });
+        return false;
+      }
+      if (this.email == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Email field is required.",
+        });
+        return false;
+      }
+      if (this.mobile == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Mobile field is required.",
+        });
+        return false;
+      }
+      if (this.password == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Password field is required.",
+        });
+        return false;
+      }
+
       axios
         .post("/api/auth/register", {
           name: this.name,

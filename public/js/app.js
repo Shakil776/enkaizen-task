@@ -2111,7 +2111,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2128,7 +2127,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                if (!(_this.url == "")) {
+                  _context.next = 3;
+                  break;
+                }
+
+                _this.$toast.error({
+                  title: "Error!",
+                  message: "URL field is required."
+                });
+
+                return _context.abrupt("return", false);
+
+              case 3:
+                _context.next = 5;
                 return axios({
                   method: "post",
                   url: "/api/image/upload-image",
@@ -2140,6 +2152,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     Authorization: "Bearer " + localStorage.getItem("token")
                   }
                 }).then(function (response) {
+                  Echo["private"]("App.Models.User.".concat(_this.user_id)).notification(function (notification) {
+                    // console.log("Notification message");
+                    // console.log(notification.message);
+                    _this.$toast.success({
+                      title: "Success!",
+                      message: notification.message
+                    });
+                  });
+
                   _this.$router.push({
                     name: "dashboard"
                   });
@@ -2147,7 +2168,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   console.log("Error");
                 });
 
-              case 2:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -2312,19 +2333,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       email: "",
       password: "",
-      loginError: false // user_id: "",
-
+      loginError: false
     };
   },
   methods: {
     login: function login() {
       var _this = this;
+
+      if (this.email == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Email field is required."
+        });
+        return false;
+      }
+
+      if (this.password == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Password field is required."
+        });
+        return false;
+      }
 
       this.loginError = false;
       axios.post("/api/auth/login", {
@@ -2426,15 +2466,45 @@ __webpack_require__.r(__webpack_exports__);
       name: "",
       email: "",
       mobile: "",
-      password: "",
-      registrationError: false
+      password: ""
     };
   },
   methods: {
     register: function register() {
       var _this = this;
 
-      this.registrationError = false;
+      if (this.name == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Name field is required."
+        });
+        return false;
+      }
+
+      if (this.email == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Email field is required."
+        });
+        return false;
+      }
+
+      if (this.mobile == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Mobile field is required."
+        });
+        return false;
+      }
+
+      if (this.password == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Password field is required."
+        });
+        return false;
+      }
+
       axios.post("/api/auth/register", {
         name: this.name,
         email: this.email,
@@ -2569,19 +2639,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   },
   mounted: function mounted() {
-    var _this2 = this;
-
     this.getImage();
-    Echo["private"]("App.Models.User.".concat(this.user_id)).notification(function (notification) {
-      // console.log("Notification message");
-      // console.log(notification.message);
-      _this2.$toast.success({
-        title: "Success!",
-        message: notification.message
-      });
-    });
-  },
-  computed: {}
+  }
 });
 
 /***/ }),
@@ -45443,15 +45502,13 @@ var render = function () {
                         attrs: { type: "text", placeholder: "Enter Image URL" },
                         domProps: { value: _vm.url },
                         on: {
-                          input: [
-                            function ($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.url = $event.target.value
-                            },
-                            _vm.imagePreview,
-                          ],
+                          change: _vm.imagePreview,
+                          input: function ($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.url = $event.target.value
+                          },
                         },
                       }),
                     ]),
@@ -45676,7 +45733,7 @@ var render = function () {
                   },
                   [
                     _c("div", { staticClass: "form-group" }, [
-                      _c("label", { attrs: { for: "" } }, [_vm._v("Email")]),
+                      _vm._m(0),
                       _vm._v(" "),
                       _c("input", {
                         directives: [
@@ -45702,7 +45759,7 @@ var render = function () {
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "form-group" }, [
-                      _c("label", { attrs: { for: "" } }, [_vm._v("Password")]),
+                      _vm._m(1),
                       _vm._v(" "),
                       _c("input", {
                         directives: [
@@ -45727,7 +45784,7 @@ var render = function () {
                       }),
                     ]),
                     _vm._v(" "),
-                    _vm._m(0),
+                    _vm._m(2),
                   ]
                 ),
               ]),
@@ -45739,6 +45796,24 @@ var render = function () {
   ])
 }
 var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { attrs: { for: "" } }, [
+      _vm._v("Email "),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { attrs: { for: "" } }, [
+      _vm._v("Password "),
+      _c("span", { staticClass: "text-danger" }, [_vm._v("*")]),
+    ])
+  },
   function () {
     var _vm = this
     var _h = _vm.$createElement
@@ -45808,7 +45883,7 @@ var render = function () {
                           },
                         ],
                         staticClass: "form-control",
-                        attrs: { type: "text", placeholder: "name" },
+                        attrs: { type: "text", placeholder: "Name" },
                         domProps: { value: _vm.name },
                         on: {
                           input: function ($event) {
@@ -45834,7 +45909,7 @@ var render = function () {
                           },
                         ],
                         staticClass: "form-control",
-                        attrs: { type: "text", placeholder: "email" },
+                        attrs: { type: "text", placeholder: "Email" },
                         domProps: { value: _vm.email },
                         on: {
                           input: function ($event) {
@@ -45860,7 +45935,7 @@ var render = function () {
                           },
                         ],
                         staticClass: "form-control",
-                        attrs: { type: "number", placeholder: "mobile" },
+                        attrs: { type: "number", placeholder: "Mobile" },
                         domProps: { value: _vm.mobile },
                         on: {
                           input: function ($event) {
@@ -45886,7 +45961,7 @@ var render = function () {
                           },
                         ],
                         staticClass: "form-control",
-                        attrs: { type: "password", placeholder: "password" },
+                        attrs: { type: "password", placeholder: "Password" },
                         domProps: { value: _vm.password },
                         on: {
                           input: function ($event) {

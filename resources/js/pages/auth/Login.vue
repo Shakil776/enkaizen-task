@@ -9,7 +9,9 @@
               <div class="card-body">
                 <form action="" method="post" @submit.prevent="login()">
                   <div class="form-group">
-                    <label for="">Email</label>
+                    <label for=""
+                      >Email <span class="text-danger">*</span></label
+                    >
                     <input
                       type="text"
                       v-model="email"
@@ -18,7 +20,9 @@
                     />
                   </div>
                   <div class="form-group">
-                    <label for="">Password</label>
+                    <label for=""
+                      >Password <span class="text-danger">*</span></label
+                    >
                     <input
                       type="password"
                       v-model="password"
@@ -49,11 +53,24 @@ export default {
       email: "",
       password: "",
       loginError: false,
-      // user_id: "",
     };
   },
   methods: {
     login() {
+      if (this.email == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Email field is required.",
+        });
+        return false;
+      }
+      if (this.password == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "Password field is required.",
+        });
+        return false;
+      }
       this.loginError = false;
       axios
         .post("/api/auth/login", {

@@ -15,7 +15,7 @@
                       v-model="url"
                       class="form-control"
                       placeholder="Enter Image URL"
-                      @input="imagePreview"
+                      @change="imagePreview"
                     />
                   </div>
 
@@ -27,7 +27,6 @@
                     </button>
                   </div>
                 </form>
-
               </div>
             </div>
           </div>
@@ -47,6 +46,13 @@ export default {
   },
   methods: {
     async addImage() {
+      if (this.url == "") {
+        this.$toast.error({
+          title: "Error!",
+          message: "URL field is required.",
+        });
+        return false;
+      }
       await axios({
         method: "post",
         url: "/api/image/upload-image",
@@ -57,8 +63,17 @@ export default {
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       })
         .then((response) => {
-            this.$router.push({ name: "dashboard" });
-          
+          Echo.private(`App.Models.User.${this.user_id}`).notification(
+            (notification) => {
+              // console.log("Notification message");
+              // console.log(notification.message);
+              this.$toast.success({
+                title: "Success!",
+                message: notification.message,
+              });
+            }
+          );
+          this.$router.push({ name: "dashboard" });
         })
         .catch((error) => {
           console.log("Error");
@@ -66,12 +81,11 @@ export default {
     },
 
     imagePreview() {
-        var img = new Image();
-        img.src = this.url;
-        img.width = 100;
-        img_preview.appendChild(img);
+      var img = new Image();
+      img.src = this.url;
+      img.width = 100;
+      img_preview.appendChild(img);
     },
-
   },
 };
 </script>

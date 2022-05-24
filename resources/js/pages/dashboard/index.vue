@@ -42,7 +42,6 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -58,7 +57,7 @@ export default {
         method: "post",
         url: "/api/image/images",
         data: {
-          user_id: this.user_id
+          user_id: this.user_id,
         },
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       })
@@ -74,38 +73,26 @@ export default {
   },
   mounted() {
     this.getImage();
-    Echo.private(`App.Models.User.${this.user_id}`).notification(
-        (notification) => {
-          // console.log("Notification message");
-          // console.log(notification.message);
-          this.$toast.success({
-            title: "Success!",
-            message: notification.message,
-          });
-        }
-      );
   },
-  computed: {},
-
 };
 </script>
 
 <style lang="scss" scoped>
-  .loader {
-    border: 16px solid #f3f3f3;
-    border-top: 16px solid #3498db;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    animation: spin 2s linear infinite;
-  }
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 2s linear infinite;
+}
 
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>
